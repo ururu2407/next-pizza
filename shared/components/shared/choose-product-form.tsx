@@ -4,16 +4,34 @@ import { Title } from "./title";
 import { Button } from "../ui";
 
 interface Props {
-  image: string;
   name: string;
-  onClickAdd?: VoidFunction;
+  image: string;
+  price: number;
+  loading?: boolean;
+  onSubmit?: VoidFunction;
   className?: string;
 }
 
-export const ChooseProductForm: React.FC<Props> = ({ name, image, onClickAdd, className }) => {
-  const textDetails = "30cm, traditional, 1 pizza, 1 drink, 1 dessert, 1 sauce";
-  const totalPrice = 15;
+/**
+ * A form for choosing a product to add to cart.
+ *
+ * @param name - The name of the product.
+ * @param image - The URL of the product image.
+ * @param price - The price of the product.
+ * @param onSubmit - The function to call when the "Add to cart" button is clicked.
+ * @param className - The CSS class to apply to the outermost element.
+ *
+ * @returns {JSX.Element} The form element.
+ */
 
+export const ChooseProductForm: React.FC<Props> = ({
+  name,
+  image,
+  price,
+  loading,
+  onSubmit,
+  className,
+}) => {
   return (
     <div className={cn("flex flex-1", className)}>
       <div className="flex items-center justify-center flex-1 relative w-full">
@@ -27,10 +45,12 @@ export const ChooseProductForm: React.FC<Props> = ({ name, image, onClickAdd, cl
       <div className="w-[490px] bg-[#f7f6f5] p-7">
         <Title text={name} size="md" className="font-extrabold mb-1" />
 
-        <p className="text-gray-400">{textDetails}</p>
-
-        <Button className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
-          Add to cart from {totalPrice}$
+        <Button
+          loading={loading}
+          onClick={() => onSubmit?.()}
+          className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10"
+        >
+          Add to cart from {price}$
         </Button>
       </div>
     </div>

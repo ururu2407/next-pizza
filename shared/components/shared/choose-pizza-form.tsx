@@ -17,20 +17,42 @@ interface Props {
   name: string;
   ingredients: Ingredient[];
   items: ProductItem[];
-  onClickAddCart?: VoidFunction;
+  loading?: boolean;
+  onSubmit: (itemId: number, ingredients: number[]) => void;
   className?: string;
 }
 
+/**
+ * Renders a form for choosing pizza options and adding them to the cart
+ *
+ * @param name - the name of the pizza
+ * @param items - the list of pizza items
+ * @param image - the image of the pizza
+ * @param ingredients - the list of ingredients
+ * @param onSubmit - the function to call when the form is submitted
+ * @param className - the className to add to the outermost element
+ *
+ * @returns {JSX.Element} the form component
+ */
 export const ChoosePizzaForm: React.FC<Props> = ({
   name,
   items,
   image,
   ingredients,
-  onClickAddCart,
+  loading,
+  onSubmit,
   className,
 }) => {
-  const { size, type, selectedIngredients, availableSizes, setSize, setType, addIngredients } =
-    usePizzaOptions(items);
+  const {
+    size,
+    type,
+    selectedIngredients,
+    availableSizes,
+    currentItemId,
+    setSize,
+    setType,
+    addIngredients,
+  } = usePizzaOptions(items);
 
   const { textDetails, totalPrice } = getPizzaDetails(
     type,
@@ -41,7 +63,9 @@ export const ChoosePizzaForm: React.FC<Props> = ({
   );
 
   const handleClickAdd = () => {
-    onClickAddCart?.();
+    if (currentItemId) {
+      onSubmit(currentItemId, Array.from(selectedIngredients));
+    }
   };
 
   return (
@@ -83,6 +107,7 @@ export const ChoosePizzaForm: React.FC<Props> = ({
         </div>
 
         <Button
+          loading={loading}
           onClick={handleClickAdd}
           className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10"
         >

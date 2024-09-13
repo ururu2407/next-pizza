@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Title } from "./title";
-import { Input } from "../ui";
-import { RangeSlider } from "./range-slider";
-import { CheckboxFiltrersGroup } from "./checkbox-filtrers-group";
-import { useFilters, useIngredients, useQueryFilters } from "@/shared/hooks";
+import React from 'react';
+import { Title } from './title';
+import { Input } from '../ui';
+import { RangeSlider } from './range-slider';
+import { CheckboxFiltrersGroup } from './checkbox-filtrers-group';
+import { useFilters, useIngredients, useQueryFilters } from '@/shared/hooks';
 
 interface Props {
   className?: string;
@@ -20,8 +20,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
   const items = ingredients.map((item) => ({ value: String(item.id), text: item.name }));
 
   const updatePrices = (prices: number[]) => {
-    filters.setPrices("priceFrom", prices[0]);
-    filters.setPrices("priceTo", prices[1]);
+    filters.setPrices('priceFrom', prices[0]);
+    filters.setPrices('priceTo', prices[1]);
   };
   return (
     <div className={className}>
@@ -35,8 +35,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
         onClickCheckbox={filters.setPizzaTypes}
         selected={filters.pizzaTypes}
         items={[
-          { text: "Thin", value: "1" },
-          { text: "Traditional", value: "2" },
+          { text: 'Traditional', value: '1' },
+          { text: 'Thin', value: '2' },
         ]}
       />
 
@@ -47,9 +47,9 @@ export const Filters: React.FC<Props> = ({ className }) => {
         onClickCheckbox={filters.setSizes}
         selected={filters.sizes}
         items={[
-          { text: "20cm", value: "20" },
-          { text: "30cm", value: "30" },
-          { text: "40cm", value: "40" },
+          { text: '20cm', value: '20' },
+          { text: '30cm', value: '30' },
+          { text: '40cm', value: '40' },
         ]}
       />
 
@@ -61,25 +61,25 @@ export const Filters: React.FC<Props> = ({ className }) => {
             type="number"
             placeholder="0"
             min={0}
-            max={1000}
+            max={100}
             value={String(filters.prices.priceFrom)}
-            onChange={(e) => filters.setPrices("priceFrom", Number(e.target.value))}
+            onChange={(e) => filters.setPrices('priceFrom', Number(e.target.value))}
           />
           <Input
             type="number"
-            placeholder="1000"
-            min={100}
-            max={30000}
+            placeholder="100"
+            min={10}
+            max={100}
             value={String(filters.prices.priceTo)}
-            onChange={(e) => filters.setPrices("priceTo", Number(e.target.value))}
+            onChange={(e) => filters.setPrices('priceTo', Number(e.target.value))}
           />
         </div>
 
         <RangeSlider
           min={0}
-          max={1000}
-          step={10}
-          value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 1000]}
+          max={100}
+          step={1}
+          value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 100]}
           onValueChange={updatePrices}
         />
       </div>
