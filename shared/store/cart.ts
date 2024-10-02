@@ -1,83 +1,90 @@
-import { create } from "zustand";
-import { Api } from "../services/api-client";
-import { getCartDetails } from "../lib";
-import { CartStateItem } from "../lib/get-cart-details";
-import { CreateCartItemValues } from "../services/dto/cart.dto";
+import { create } from 'zustand';
+import { Api } from '../services/api-client';
+import { getCartDetails } from '../lib';
+import { CartStateItem } from '../lib/get-cart-details';
+import { CreateCartItemValues } from '../services/dto/cart.dto';
 
 export interface CartState {
-    loading: boolean;
-    error: boolean;
-    totalAmount: number;
-    items: CartStateItem[];
+  loading: boolean;
+  error: boolean;
+  totalAmount: number;
+  items: CartStateItem[];
 
-    /* GET Cart Items  */
-    fetchCartItems: () => Promise<void>;
+  /* GET Cart Items  */
+  fetchCartItems: () => Promise<void>;
 
-    /* request for updating item quantity  */
-    updateItemQuantity: (id: number, quantity: number) => Promise<void>;
+  /* request for updating item quantity  */
+  updateItemQuantity: (id: number, quantity: number) => Promise<void>;
 
-    /* request for adding new cart item   */
-    addCartItem: (values: any) => Promise<void>;
+  /* request for adding new cart item   */
+  addCartItem: (values: any) => Promise<void>;
 
-    /* request for removing cart item  */
-    removeCartItem: (id: number) => Promise<void>;
+  /* request for removing cart item  */
+  removeCartItem: (id: number) => Promise<void>;
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
-    items: [],
-    error: false,
-    loading: true,
-    totalAmount: 0,
+  items: [],
+  error: false,
+  loading: true,
+  totalAmount: 0,
 
-    fetchCartItems: async () => {
-        try {
-            set({ loading: true, error: false });
-            const data = await Api.cart.getCart();
-            set(getCartDetails(data))
-        } catch (error) {
-            console.error(error);
-            set({ error: true });
-        } finally {
-            set({ loading: false });
-        }
-    },
+  fetchCartItems: async () => {
+    try {
+      set({ loading: true, error: false });
+      const data = await Api.cart.getCart();
+      set(getCartDetails(data));
+    } catch (error) {
+      console.error(error);
+      set({ error: true });
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-    updateItemQuantity: async (id: number, quantity: number) => {
-        try {
-            set({ loading: true, error: false });
-            const data = await Api.cart.updateItemQuantity(id, quantity);
-            set(getCartDetails(data))
-        } catch (error) {
-            console.error(error);
-            set({ error: true });
-        } finally {
-            set({ loading: false });
-        }
-    },
+  updateItemQuantity: async (id: number, quantity: number) => {
+    try {
+      set({ loading: true, error: false });
+      const data = await Api.cart.updateItemQuantity(id, quantity);
+      set(getCartDetails(data));
+    } catch (error) {
+      console.error(error);
+      set({ error: true });
+    } finally {
+      set({ loading: false });
+    }
+  },
 
-    removeCartItem: async (id: number) => {
-        try {
-            set({ loading: true, error: false });
-            const data = await Api.cart.removeCartItem(id);
-            set(getCartDetails(data))
-        } catch (error) {
-            console.error(error);
-            set({ error: true });
-        } finally {
-            set({ loading: false });
-        }
-    },
+  removeCartItem: async (id: number) => {
+    try {
+      set((state) => ({
+        loading: true,
+        error: false,
+        items: state.items.map((item) => (item.id === id ? { ...item, disabled: true } : item)),
+      }));
+      const data = await Api.cart.removeCartItem(id);
+      set(getCartDetails(data));
+    } catch (error) {
+      console.error(error);
+      set({ error: true });
+    } finally {
+      set((state) => ({
+        loading: false,
+        items: state.items.map((item) => ({ ...item, disabled: false })),
+      }));
+    }
+  },
 
-    addCartItem: async (values: CreateCartItemValues) => {
-        try {
-            set({ loading: true, error: false });
-            const data = await Api.cart.addCartItem(values);
-            set(getCartDetails(data))
-        } catch (error) {
-            console.error(error);
-            set({ error: true });
-        } finally {
-            set({ loading: false });
-        }
-    },
-}))
+  addCartItem: async (values: CreateCartItemValues) => {
+    try {
+      set({ loading: true, error: false });
+      const data = await Api.cart.addCartItem(values);
+      set(getCartDetails(data));
+    } catch (error) {
+      console.error(error);
+      set({ error: true });
+    } finally {
+      set({ loading: false });
+    }
+  },
+}));
