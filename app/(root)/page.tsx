@@ -1,7 +1,14 @@
-import { Container, Filters, ProductsGroupList, Title, TopBar } from "@/shared/components/shared";
-import { Suspense } from "react";
-import { findPizzas } from "@/shared/lib";
-import { GetSearchParams } from "@/shared/lib/find-pizzas";
+import {
+  Container,
+  Filters,
+  ProductsGroupList,
+  Title,
+  TopBar,
+  Stories,
+} from '@/shared/components/shared';
+import { Suspense } from 'react';
+import { findPizzas } from '@/shared/lib';
+import { GetSearchParams } from '@/shared/lib/find-pizzas';
 
 export default async function Home({ searchParams }: { searchParams: GetSearchParams }) {
   const categories = await findPizzas(searchParams);
@@ -12,6 +19,8 @@ export default async function Home({ searchParams }: { searchParams: GetSearchPa
         <Title text="All pizzas" size="lg" className="font-extrabold" />
       </Container>
       <TopBar categories={categories.filter((category) => category.products.length > 0)} />
+
+      <Stories />
 
       <Container className="mt-9 pb-14">
         <div className="flex gap-[90px]">

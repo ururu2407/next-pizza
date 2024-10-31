@@ -82,3 +82,15 @@ html {
     color: #000 !important;
   }
 }
+
+#nprogress .bar {
+  @apply bg-primary !important;
+}
+
+#nprogress .peg {
+  @apply bg-primary !important;
+}
+
+#nprogress .spinner-icon {
+  @apply bg-primary !important;
+}

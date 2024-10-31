@@ -10,15 +10,17 @@ const randomDecimalNumber = (min: number, max: number) => {
 const generateProductItem = ({
   productId,
   pizzaType,
+  price,
   size,
 }: {
   productId: number;
   pizzaType?: 1 | 2;
+  price?: number;
   size?: 20 | 30 | 40;
 }) => {
   return {
     productId,
-    price: randomDecimalNumber(19, 60),
+    price: price || randomDecimalNumber(2, 30),
     pizzaType,
     size,
   } as Prisma.ProductItemUncheckedCreateInput;
@@ -59,7 +61,7 @@ async function up() {
   const pizza1 = await prisma.product.create({
     data: {
       name: 'Pizza Margherita',
-      image: 'https://media.dodostatic.net/image/r:233x233/11EE7D610A62D78598406363A9A8AD65.avif',
+      image: '/assets/img-products/pizza/margherita.avif',
       categoryId: 1,
       ingredients: {
         connect: _ingredients.slice(0, 5),
@@ -69,7 +71,7 @@ async function up() {
   const pizza2 = await prisma.product.create({
     data: {
       name: 'Cheese',
-      image: 'https://media.dodostatic.net/image/r:233x233/11EE7D610D2925109AB2E1C92CC5383C.avif',
+      image: '/assets/img-products/pizza/cheese.avif',
       categoryId: 1,
       ingredients: {
         connect: _ingredients.slice(5, 10),
@@ -79,7 +81,7 @@ async function up() {
   const pizza3 = await prisma.product.create({
     data: {
       name: 'Chorizo',
-      image: 'https://media.dodostatic.net/image/r:233x233/11EE7D61706D472F9A5D71EB94149304.avif',
+      image: '/assets/img-products/pizza/chorizo.avif',
       categoryId: 1,
       ingredients: {
         connect: _ingredients.slice(10, 40),
@@ -89,20 +91,20 @@ async function up() {
 
   await prisma.productItem.createMany({
     data: [
-      generateProductItem({ productId: pizza1.id, pizzaType: 2, size: 20 }),
-      generateProductItem({ productId: pizza1.id, pizzaType: 1, size: 30 }),
-      generateProductItem({ productId: pizza1.id, pizzaType: 2, size: 40 }),
+      generateProductItem({ productId: pizza1.id, pizzaType: 2, price: 10, size: 20 }),
+      generateProductItem({ productId: pizza1.id, pizzaType: 1, price: 13, size: 30 }),
+      generateProductItem({ productId: pizza1.id, pizzaType: 2, price: 15, size: 40 }),
 
-      generateProductItem({ productId: pizza2.id, pizzaType: 1, size: 20 }),
-      generateProductItem({ productId: pizza2.id, pizzaType: 1, size: 30 }),
-      generateProductItem({ productId: pizza2.id, pizzaType: 1, size: 40 }),
-      generateProductItem({ productId: pizza2.id, pizzaType: 2, size: 20 }),
-      generateProductItem({ productId: pizza2.id, pizzaType: 2, size: 30 }),
-      generateProductItem({ productId: pizza2.id, pizzaType: 2, size: 40 }),
+      generateProductItem({ productId: pizza2.id, pizzaType: 1, price: 11, size: 20 }),
+      generateProductItem({ productId: pizza2.id, pizzaType: 1, price: 13, size: 30 }),
+      generateProductItem({ productId: pizza2.id, pizzaType: 1, price: 15, size: 40 }),
+      generateProductItem({ productId: pizza2.id, pizzaType: 2, price: 17, size: 20 }),
+      generateProductItem({ productId: pizza2.id, pizzaType: 2, price: 20, size: 30 }),
+      generateProductItem({ productId: pizza2.id, pizzaType: 2, price: 25, size: 40 }),
 
-      generateProductItem({ productId: pizza3.id, pizzaType: 1, size: 20 }),
-      generateProductItem({ productId: pizza3.id, pizzaType: 2, size: 30 }),
-      generateProductItem({ productId: pizza3.id, pizzaType: 2, size: 40 }),
+      generateProductItem({ productId: pizza3.id, pizzaType: 1, price: 16, size: 20 }),
+      generateProductItem({ productId: pizza3.id, pizzaType: 2, price: 15, size: 30 }),
+      generateProductItem({ productId: pizza3.id, pizzaType: 2, price: 20, size: 40 }),
 
       generateProductItem({ productId: 1 }),
       generateProductItem({ productId: 2 }),
@@ -120,7 +122,6 @@ async function up() {
       generateProductItem({ productId: 14 }),
       generateProductItem({ productId: 15 }),
       generateProductItem({ productId: 16 }),
-      generateProductItem({ productId: 17 }),
     ],
   });
 
@@ -149,6 +150,50 @@ async function up() {
       },
     },
   });
+
+  await prisma.story.createMany({
+    data: [
+      {
+        previewImageUrl: '/assets/img-products/story/story_1.webp',
+      },
+      {
+        previewImageUrl: '/assets/img-products/story/story_2.webp',
+      },
+      {
+        previewImageUrl: '/assets/img-products/story/story_3.webp',
+      },
+      {
+        previewImageUrl: '/assets/img-products/story/story_4.webp',
+      },
+      {
+        previewImageUrl: '/assets/img-products/story/story_5.webp',
+      },
+      {
+        previewImageUrl: '/assets/img-products/story/story_6.webp',
+      },
+    ],
+  });
+
+  await prisma.storyItem.createMany({
+    data: [
+      {
+        storyId: 1,
+        sourceUrl: '/assets/img-products/story/storyItem_1.webp',
+      },
+      {
+        storyId: 1,
+        sourceUrl: '/assets/img-products/story/storyItem_2.webp',
+      },
+      {
+        storyId: 1,
+        sourceUrl: '/assets/img-products/story/storyItem_3.webp',
+      },
+      {
+        storyId: 1,
+        sourceUrl: '/assets/img-products/story/storyItem_4.webp',
+      },
+    ],
+  });
 }
 
 async function down() {
@@ -159,6 +204,8 @@ async function down() {
   await prisma.$executeRaw`TRUNCATE TABLE "Ingredient" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Product" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "ProductItem" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Story" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "StoryItem" RESTART IDENTITY CASCADE`;
 }
 
 async function main() {

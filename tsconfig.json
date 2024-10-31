@@ -27,6 +27,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "@types/*.d.ts",
+    "@types/*.d.ts",
     "app/api/paymentStatus.js"
   ],
   "exclude": ["node_modules"]
