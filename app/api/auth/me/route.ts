@@ -1,12 +1,13 @@
 import { prisma } from '@/prisma/prisma-client';
-import { getUserSession } from '@/shared/lib/get-user-session';
+import { authOptions } from '@/shared/constants/auth-options';
+import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: any, res: any) {
   try {
-    const user = await getUserSession();
+    const user = await getServerSession(req, res, authOptions);
 
     if (!user) {
       return NextResponse.json({ message: 'You are not authorized' }, { status: 401 });
@@ -14,7 +15,7 @@ export async function GET() {
 
     const data = await prisma.user.findUnique({
       where: {
-        id: Number(user.id),
+        id: Number(user.user.id),
       },
       select: {
         fullName: true,
